@@ -22,20 +22,11 @@ metadata:
   labels:
     name: stateful-api-service
 spec:
-  type: NodePort
+  clusterIP: None
   ports:
     - port: 8080
   selector:
     app: stateful-api
----
-apiVersion: storage.k8s.io/v1
-kind: StorageClass
-metadata:
-  name: data-dir
-provisioner: kubernetes.io/gce-pd
-parameters:
-  type: pd-standard
-  replication-type: regional-pd
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -65,13 +56,13 @@ spec:
               memory: 128Mi
           volumeMounts:
             - mountPath: /data
-              name: data-dir
+              name: data
   volumeClaimTemplates:
     - metadata:
-        name: data-dir
+        name: data
       spec:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: data-dir
+        storageClassName: standard
         resources:
           requests:
             storage: 1Gi
