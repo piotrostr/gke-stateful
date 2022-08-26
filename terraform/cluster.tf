@@ -1,7 +1,7 @@
 data "google_client_config" "provider" {}
 
 resource "google_container_cluster" "cluster" {
-  name               = "cluster"
+  name               = "stateful-cluster"
   location           = "us-central1-a"
   initial_node_count = 1
 
