@@ -28,15 +28,25 @@ spec:
   selector:
     app: stateful-api
 ---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: data-dir
+provisioner: pd.csi.storage.gke.io
+parameters:
+  type: pd-standard
+  replication-type: regional-pd
+---
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: stateful-api-deployment
 spec:
+  serviceName: stateful-api-service
+  replicas: 3
   selector:
     matchLabels:
       app: stateful-api
-  replicas: 5
   template:
     metadata:
       labels:
@@ -53,4 +63,15 @@ spec:
               cpu: 150m
             limits:
               memory: 128Mi
-status: {}
+          volumeMounts:
+            - mountPath: /data
+              name: data-dir
+  volumeClaimTemplates:
+    - metadata:
+        name: data-dir
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: data-dir
+        resources:
+          requests:
+            storage: 1Gi
