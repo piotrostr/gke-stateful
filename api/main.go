@@ -8,14 +8,20 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const Filepath = "/data/times_called"
+
 func EnsureFileExists() {
-	_, err := os.Stat("times_called")
+	_, err := os.Stat(Filepath)
 	if os.IsNotExist(err) {
-		_, err := os.Create("times_called")
+		err := os.Mkdir("/data", 0o644)
 		if err != nil {
 			log.Fatal(err)
 		}
-		err = os.WriteFile("times_called", []byte("0"), 0o644)
+		_, err = os.Create(Filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		err = os.WriteFile(Filepath, []byte("0"), 0o644)
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -29,7 +35,7 @@ func EnsureFileExists() {
 // but the example is just to get a feel for the differences between stateful
 // sets and deployments.
 func GetTimesCalled() int {
-	contents, err := os.ReadFile("times_called")
+	contents, err := os.ReadFile(Filepath)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -41,7 +47,7 @@ func GetTimesCalled() int {
 
 	defer func() {
 		err := os.WriteFile(
-			"times_called",
+			Filepath,
 			[]byte(strconv.Itoa(num+1)),
 			0o644,
 		)
