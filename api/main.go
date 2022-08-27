@@ -13,9 +13,13 @@ const Filepath = "/data/times_called"
 func EnsureFileExists() {
 	_, err := os.Stat(Filepath)
 	if os.IsNotExist(err) {
-		err := os.Mkdir("/data", 0o644)
-		if err != nil {
-			log.Fatal(err)
+		_, err := os.Stat("/data")
+		if os.IsNotExist(err) {
+			os.Mkdir("/data", 0o755)
+			err = os.Mkdir("/data", 0o644)
+			if err != nil {
+				log.Fatal(err)
+			}
 		}
 		_, err = os.Create(Filepath)
 		if err != nil {
@@ -60,7 +64,7 @@ func GetTimesCalled() int {
 }
 
 func GetRouter() *gin.Engine {
-	gin.SetMode(gin.DebugMode)
+	gin.SetMode(gin.ReleaseMode)
 
 	r := gin.Default()
 
