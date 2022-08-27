@@ -16,19 +16,19 @@ Same as [here](https://github.com/piotrostr/gke-gpu-tf/).
 Provisioning of the resources happens using
 
 ```sh
-$ terraform apply
+terraform apply
 ```
 
 in the `terraform` directory. Having created the cluster, get the credentials
 
 ```sh
-$ gcloud container clusters get-credentials cluster --region=us-central1-a
+gcloud container clusters get-credentials cluster --region=us-central1-a
 ```
 
 and run
 
 ```sh
-skaffold apply
+skaffold apply manifest.yaml
 ```
 
 to create the resources in the GKE cluster.
