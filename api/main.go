@@ -15,7 +15,6 @@ func EnsureFileExists() {
 	if os.IsNotExist(err) {
 		_, err := os.Stat("/data")
 		if os.IsNotExist(err) {
-			os.Mkdir("/data", 0o755)
 			err = os.Mkdir("/data", 0o644)
 			if err != nil {
 				log.Fatal(err)
